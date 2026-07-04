@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="KidsAI is a no-login learning hub for safe, guided AI activities for children and teens."
+    />
+    <title>KidsAI</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-shell">
+      <nav class="topbar" aria-label="Primary">
+        <a class="brand" href="./" aria-label="KidsAI home">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span>KidsAI</span>
+        </a>
+        <div class="nav-actions" aria-label="Page sections">
+          <a href="#activities">Activities</a>
+          <a href="#workspace">Workspace</a>
+          <a href="#guardrails">Guardrails</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero app-shell" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Safe AI practice for young learners</p>
+          <h1 id="page-title">KidsAI</h1>
+          <p class="lead">
+            A guided activity board for learning how to ask better questions,
+            create responsibly, and check AI answers before trusting them.
+          </p>
+          <div class="mode-panel" aria-labelledby="age-label">
+            <span id="age-label">Learner mode</span>
+            <div class="segmented" id="age-tabs" role="tablist"></div>
+          </div>
+        </div>
+        <figure class="hero-media">
+          <img
+            src="./assets/kids-ai-workshop.svg"
+            alt="Illustration of a child-friendly AI learning workspace with cards and safety checks"
+          />
+        </figure>
+      </section>
+
+      <section class="activity-band" id="activities" aria-labelledby="activities-title">
+        <div class="app-shell section-grid">
+          <div>
+            <p class="eyebrow">Choose a session</p>
+            <h2 id="activities-title">Activity Board</h2>
+          </div>
+          <div class="activity-grid" id="activity-grid"></div>
+        </div>
+      </section>
+
+      <section class="workspace app-shell" id="workspace" aria-labelledby="workspace-title">
+        <div class="workspace-header">
+          <div>
+            <p class="eyebrow">Run the activity</p>
+            <h2 id="workspace-title">Workspace</h2>
+          </div>
+          <div class="session-meta" id="session-meta"></div>
+        </div>
+
+        <div class="workspace-grid">
+          <article class="tool-panel" id="activity-panel" aria-live="polite"></article>
+          <aside class="tool-panel" id="prompt-panel" aria-labelledby="prompt-title">
+            <h3 id="prompt-title">Prompt Starters</h3>
+            <div id="prompt-list" class="prompt-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="guardrails" id="guardrails" aria-labelledby="guardrails-title">
+        <div class="app-shell guardrail-grid">
+          <div>
+            <p class="eyebrow">Before trusting an answer</p>
+            <h2 id="guardrails-title">Guardrails</h2>
+            <p>
+              KidsAI keeps the first release simple: no login, no personal data
+              collection, and no live AI calls. The focus is on habits that make
+              AI use safer and more useful.
+            </p>
+          </div>
+          <ul class="checklist" id="guardrail-list"></ul>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
