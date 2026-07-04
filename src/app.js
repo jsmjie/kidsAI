@@ -10,7 +10,11 @@ const els = {
   activityPanel: document.querySelector("#activity-panel"),
   promptList: document.querySelector("#prompt-list"),
   guardrailList: document.querySelector("#guardrail-list"),
-  sessionMeta: document.querySelector("#session-meta")
+  sessionMeta: document.querySelector("#session-meta"),
+  chatForm: document.querySelector("#chat-form"),
+  chatInput: document.querySelector("#chat-input"),
+  chatMessages: document.querySelector("#chat-messages"),
+  chatStatus: document.querySelector("#chat-status")
 };
 
 async function loadActivities() {
@@ -97,6 +101,70 @@ function renderGuardrails() {
     .join("");
 }
 
+function appendMessage(role, text) {
+  const message = document.createElement("article");
+  const paragraph = document.createElement("p");
+
+  message.className = `chat-message ${role}`;
+  paragraph.textContent = text;
+  message.append(paragraph);
+  els.chatMessages.append(message);
+  els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
+}
+
+function setChatPending(isPending) {
+  const button = els.chatForm.querySelector("button");
+
+  button.disabled = isPending;
+  els.chatInput.disabled = isPending;
+  els.chatStatus.textContent = isPending ? "Thinking..." : "";
+}
+
+async function sendChatMessage(message) {
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      ageId: state.ageId,
+      message
+    })
+  });
+
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(payload.error || "Kids AI could not answer right now.");
+  }
+
+  return payload.reply || "I need to think about that another way.";
+}
+
+async function handleChatSubmit(event) {
+  event.preventDefault();
+
+  const message = els.chatInput.value.trim();
+
+  if (!message) {
+    return;
+  }
+
+  appendMessage("user", message);
+  els.chatInput.value = "";
+  setChatPending(true);
+
+  try {
+    const reply = await sendChatMessage(message);
+    appendMessage("assistant", reply);
+  } catch (error) {
+    appendMessage("assistant", error.message);
+  } finally {
+    setChatPending(false);
+    els.chatInput.focus();
+  }
+}
+
 function render() {
   renderAgeTabs();
   renderActivities();
@@ -106,6 +174,7 @@ function render() {
 
 async function main() {
   state.data = await loadActivities();
+  els.chatForm.addEventListener("submit", handleChatSubmit);
   render();
 }
 

@@ -18,6 +18,7 @@
           <span>Kids AI</span>
         </a>
         <div class="nav-actions" aria-label="Page sections">
+          <a href="#chat">Chat</a>
           <a href="#activities">Chat Behaviors</a>
           <a href="#workspace">Workspace</a>
           <a href="#guardrails">Guardrails</a>
@@ -46,6 +47,38 @@
             alt="Illustration of a child-friendly AI learning workspace with cards and safety checks"
           />
         </figure>
+      </section>
+
+      <section class="chat app-shell" id="chat" aria-labelledby="chat-title">
+        <div class="chat-header">
+          <div>
+            <p class="eyebrow">Kids AI chatbot</p>
+            <h2 id="chat-title">Guided Chat</h2>
+          </div>
+        </div>
+        <div class="chat-panel">
+          <div class="chat-messages" id="chat-messages" aria-live="polite">
+            <article class="chat-message assistant">
+              <p>
+                Ask me something you are curious about. I will help you think it
+                through step by step.
+              </p>
+            </article>
+          </div>
+          <form class="chat-form" id="chat-form">
+            <label class="sr-only" for="chat-input">Message</label>
+            <textarea
+              id="chat-input"
+              name="message"
+              maxlength="1200"
+              rows="3"
+              placeholder="Ask a question..."
+              required
+            ></textarea>
+            <button class="send-button" type="submit">Send</button>
+          </form>
+          <p class="chat-status" id="chat-status" role="status"></p>
+        </div>
       </section>
 
       <section class="activity-band" id="activities" aria-labelledby="activities-title">

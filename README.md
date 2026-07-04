@@ -17,8 +17,9 @@ The product has two core features:
    into smaller steps, invite the child to make a guess, and only reveal answers
    when that supports learning.
 
-This first repo version is a static web shell and product direction page for
-that chatbot. It does not yet include a live model backend.
+This repo now includes a small Vercel serverless chat endpoint backed by OpenAI.
+It uses `OPENAI_API_KEY` on the server and fixes the chat model to
+`gpt-5.4-mini`.
 
 ## Links
 
@@ -39,6 +40,17 @@ Then open `http://127.0.0.1:4173`.
 ```bash
 npm test
 ```
+
+## Environment
+
+Server-side chat requires:
+
+```bash
+OPENAI_API_KEY=
+```
+
+The model is intentionally not configurable through environment variables. Kids
+AI uses `gpt-5.4-mini` only.
 
 ## Product Direction
 
