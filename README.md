@@ -2,6 +2,12 @@
 
 KidsAI is a static, no-login learning hub for child-safe AI activities.
 
+## Links
+
+- GitHub: https://github.com/jsmjie/kidsAI
+- Production: https://kidsai-plum.vercel.app
+- Vercel project: `kidsai`
+
 ## Local Preview
 
 ```bash
