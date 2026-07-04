@@ -27,3 +27,7 @@ npm test
 The app is designed for Vercel static hosting from the repository root.
 `vercel.json` sets `outputDirectory` to `.` so Vercel does not look for a
 separate `public/` folder.
+
+The current production deployment was created with Vercel CLI. GitHub
+auto-deploy can be connected after the Vercel GitHub App has access to this
+repository.
