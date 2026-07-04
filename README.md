@@ -1,6 +1,24 @@
-# KidsAI
+# Kids AI
 
-KidsAI is a static, no-login learning hub for child-safe AI activities.
+Kids AI is a kid-facing chatbot project. Its motivation is to give children an
+AI companion that is safer than a general adult chatbot and more useful than an
+answer machine.
+
+The product has two core features:
+
+1. Guardrails
+   Kids AI should prevent adult knowledge, adult information, and age-inappropriate
+   content from reaching children. Safety cannot rely on a prompt alone; the
+   target design needs layered input checks, age-aware policy, output checks,
+   curated tools, monitoring, and escalation paths.
+2. Help with thinking
+   Kids AI should guide children through the thinking process instead of giving
+   direct answers by default. It should ask clarifying questions, break problems
+   into smaller steps, invite the child to make a guess, and only reveal answers
+   when that supports learning.
+
+This first repo version is a static web shell and product direction page for
+that chatbot. It does not yet include a live model backend.
 
 ## Links
 
@@ -21,6 +39,19 @@ Then open `http://127.0.0.1:4173`.
 ```bash
 npm test
 ```
+
+## Product Direction
+
+Kids AI should be designed as a coach:
+
+- It asks before answering when the child has not shown their thinking.
+- It gives hints, examples, and checkpoints before final answers.
+- It adjusts explanations by age band: `child_6_8`, `child_9_12`, and
+  `teen_13_17`.
+- It refuses or redirects adult-only content instead of simplifying unsafe
+  material for children.
+- It keeps personal data, unrestricted web access, and external tools out of the
+  child-facing path unless they are explicitly gated server-side.
 
 ## Deployment
 

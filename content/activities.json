@@ -6,40 +6,40 @@
       "activities": [
         {
           "id": "picture-questions",
-          "title": "Picture Questions",
-          "summary": "Turn an image or object into clear questions before asking AI.",
-          "goal": "Practice asking one simple question at a time and checking whether the answer matches what you can see.",
+          "title": "Ask Before Answering",
+          "summary": "The chatbot asks what the child notices before it explains.",
+          "goal": "Guide younger children to observe first, ask one clear question, and compare the chatbot's help with what they can see.",
           "time": "15 min",
           "mode": "Guided",
           "steps": [
-            "Pick one object, drawing, or photo with an adult nearby.",
-            "Say what you notice before asking AI anything.",
-            "Ask one question and compare the answer with the object.",
-            "Mark anything that sounds confusing or too certain."
+            "Ask the child what they notice before giving an explanation.",
+            "Turn their observation into one simple question.",
+            "Offer a small hint before any direct answer.",
+            "Check whether the child can explain the idea back."
           ],
           "prompts": [
-            "I see ____. What are three safe questions I can ask about it?",
-            "Explain this like I am seven, and tell me one thing I should check.",
-            "Give me a short answer, then ask me one follow-up question."
+            "What do you notice first about ____?",
+            "Can you make one guess before I give a hint?",
+            "Here is a small clue. What do you think now?"
           ]
         },
         {
           "id": "story-studio",
-          "title": "Story Studio",
-          "summary": "Build a short story while keeping names, places, and feelings clear.",
-          "goal": "Use AI as a helper for imagination without letting it take over the child's ideas.",
+          "title": "Safe Story Helper",
+          "summary": "The chatbot keeps stories age-appropriate and child-led.",
+          "goal": "Use AI as a helper for imagination without adult themes or taking over the child's ideas.",
           "time": "20 min",
           "mode": "Creative",
           "steps": [
-            "Choose a main character and a simple problem.",
-            "Ask AI for three story paths, then choose one.",
-            "Write the ending yourself before asking for feedback.",
-            "Check that the story stays kind and age-appropriate."
+            "Ask for the child's character and simple problem.",
+            "Filter out adult themes before suggesting story paths.",
+            "Offer choices instead of writing the whole story.",
+            "Ask the child to choose the ending and explain why."
           ],
           "prompts": [
-            "Help me make three story ideas about a character who learns ____.",
-            "Ask me questions before you write the next part.",
-            "Make my sentence clearer, but keep my idea."
+            "Who is your character, and what problem are they trying to solve?",
+            "I can suggest three safe story paths. Which one feels like yours?",
+            "I can make your sentence clearer while keeping your idea."
           ]
         }
       ]
@@ -50,59 +50,59 @@
       "activities": [
         {
           "id": "question-lab",
-          "title": "Question Lab",
-          "summary": "Rewrite vague questions into focused prompts with success criteria.",
-          "goal": "Learn that better inputs produce more useful AI outputs.",
+          "title": "Thinking Coach",
+          "summary": "The chatbot slows down and asks the child to think before answering.",
+          "goal": "Help children turn a vague question into a clearer problem, then reason through it step by step.",
           "time": "25 min",
           "mode": "Practice",
           "steps": [
-            "Write the first question exactly as it comes to mind.",
-            "Add the audience, format, and what a good answer should include.",
-            "Ask AI for an answer and a checklist of assumptions.",
-            "Revise the prompt once and compare the two answers."
+            "Restate the child's question in simpler words.",
+            "Ask what they already know or think might be true.",
+            "Give one hint or example before the final answer.",
+            "Ask the child to explain the next step."
           ],
           "prompts": [
-            "Turn this question into a better prompt: ____.",
-            "Answer in five bullets for a student in Year 5, and list two assumptions.",
-            "What information is missing from my question?"
+            "What have you already tried?",
+            "What is one guess you can make before I help?",
+            "Let's solve the first step together. What should we do next?"
           ]
         },
         {
           "id": "fact-check",
-          "title": "Fact Check Sprint",
-          "summary": "Separate facts, guesses, and opinions in an AI answer.",
-          "goal": "Build the habit of checking claims instead of accepting fluent text.",
+          "title": "Answer Check",
+          "summary": "The chatbot labels facts, guesses, and opinions instead of sounding certain.",
+          "goal": "Build the habit of checking claims instead of accepting fluent AI text.",
           "time": "30 min",
           "mode": "Research",
           "steps": [
-            "Ask AI for a short explanation about a school topic.",
-            "Highlight claims that sound factual.",
-            "Choose two claims to verify with a trusted source.",
-            "Rewrite the answer with labels for facts, guesses, and opinions."
+            "Give a short age-appropriate explanation.",
+            "Label which parts are facts, guesses, or opinions.",
+            "Pick one claim the child should verify.",
+            "Ask the child how they would check it."
           ],
           "prompts": [
-            "Explain ____ in 120 words and label any uncertain parts.",
-            "List which parts of this answer need checking: ____.",
-            "Give me search terms I can use to verify this claim."
+            "Here is the safe short answer. Which part should we check?",
+            "This part is a fact, this part is a guess. Can you spot another?",
+            "What trusted source could help us verify this?"
           ]
         },
         {
           "id": "design-critic",
-          "title": "Design Critic",
-          "summary": "Use AI to improve posters, slides, and project plans.",
-          "goal": "Practice asking for specific feedback and choosing which advice to ignore.",
+          "title": "Kid-Led Feedback",
+          "summary": "The chatbot gives feedback without doing the child's work.",
+          "goal": "Practice using AI as a coach while keeping ownership with the learner.",
           "time": "25 min",
           "mode": "Creative",
           "steps": [
-            "Describe the project and its audience.",
-            "Ask AI for feedback on clarity, layout, and missing details.",
-            "Pick only two changes to make.",
-            "Explain why you accepted or rejected each suggestion."
+            "Ask the child what their project is trying to show.",
+            "Give feedback as questions and choices.",
+            "Suggest no more than two improvements.",
+            "Ask the child which suggestion they want to use and why."
           ],
           "prompts": [
-            "Review this project idea for clarity and tell me the top two improvements.",
-            "Give feedback as a kind teacher, not as the person doing the work.",
-            "What should I keep unchanged?"
+            "What do you want your project to teach someone?",
+            "I can give two suggestions, but you choose what changes.",
+            "What part should stay in your own voice?"
           ]
         }
       ]
@@ -113,50 +113,50 @@
       "activities": [
         {
           "id": "source-map",
-          "title": "Source Map",
-          "summary": "Plan what evidence a serious AI-assisted answer needs.",
-          "goal": "Connect AI output to verifiable sources and clear uncertainty labels.",
+          "title": "Age Gate",
+          "summary": "The chatbot redirects adult-only topics and keeps the conversation appropriate.",
+          "goal": "Protect teens from adult-only content while still offering safe, educational alternatives.",
           "time": "35 min",
           "mode": "Research",
           "steps": [
-            "Define the claim, audience, and decision the answer supports.",
-            "Ask AI for a source plan before asking for a final answer.",
-            "Check whether each source type is primary, secondary, or opinion.",
-            "Create a final answer that names what is confirmed and what is uncertain."
+            "Classify whether the question is safe, sensitive, or adult-only.",
+            "Refuse or redirect adult-only content.",
+            "Offer a safe educational version when appropriate.",
+            "Encourage a parent, teacher, or trusted adult for sensitive issues."
           ],
           "prompts": [
-            "Before answering, make a source plan for this question: ____.",
-            "Separate confirmed facts, interpretations, and open questions.",
-            "What would make this answer unreliable?"
+            "I cannot help with adult-only details, but I can explain the safe basics.",
+            "This topic needs a trusted adult. What school-safe part should we discuss?",
+            "Let's turn this into a general learning question."
           ]
         },
         {
           "id": "prompt-debugger",
-          "title": "Prompt Debugger",
-          "summary": "Diagnose why an AI answer is shallow, wrong, or off-task.",
-          "goal": "Treat prompting as an iterative debugging process.",
+          "title": "Reasoning Debugger",
+          "summary": "The chatbot checks whether the child understands the answer.",
+          "goal": "Treat learning as an iterative thinking process, not a one-shot answer.",
           "time": "30 min",
           "mode": "Practice",
           "steps": [
-            "Save the original prompt and answer.",
-            "Identify whether the failure is scope, context, format, or evidence.",
-            "Rewrite only the weakest part of the prompt.",
-            "Compare both outputs against the original goal."
+            "Ask the child to explain the answer in their own words.",
+            "Find the step that feels confusing.",
+            "Give a smaller hint or a simpler example.",
+            "Try the explanation again and check understanding."
           ],
           "prompts": [
-            "Diagnose why this answer missed the mark: ____.",
-            "Rewrite my prompt without making it longer than 80 words.",
-            "Create a rubric for judging the next answer."
+            "Which step is confusing?",
+            "Can you explain this back in your own words?",
+            "Let's try a smaller example first."
           ]
         }
       ]
     }
   ],
   "guardrails": [
-    "Use age-appropriate prompts and keep an adult in the loop for younger learners.",
-    "Do not enter private names, addresses, school IDs, passwords, or photos without permission.",
-    "Ask AI to label uncertainty, then verify important claims with trusted sources.",
-    "Treat AI as a coach, not the owner of the student's work.",
-    "Stop and ask an adult when an answer feels unsafe, personal, or too persuasive."
+    "Block or redirect adult-only content before it reaches the child.",
+    "Use age bands so explanations fit the learner instead of the general adult internet.",
+    "Do not collect private names, addresses, school IDs, passwords, or photos.",
+    "Prefer hints, questions, and checkpoints before final answers.",
+    "Gate all external tools and curated sources server-side before a real chatbot launch."
   ]
 }

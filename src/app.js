@@ -110,5 +110,5 @@ async function main() {
 }
 
 main().catch((error) => {
-  document.body.innerHTML = `<main class="app-shell"><h1>KidsAI</h1><p>${error.message}</p></main>`;
+  document.body.innerHTML = `<main class="app-shell"><h1>Kids AI</h1><p>${error.message}</p></main>`;
 });

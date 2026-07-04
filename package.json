@@ -2,7 +2,7 @@
   "name": "kidsai",
   "version": "0.1.0",
   "private": true,
-  "description": "Static KidsAI learning hub for child-safe AI activities.",
+  "description": "Static Kids AI product shell for a child-safe thinking chatbot.",
   "type": "module",
   "scripts": {
     "test": "node tests/static.test.mjs"
