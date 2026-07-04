@@ -134,8 +134,7 @@ export default async function handler(request, response) {
 
   if (!apiKey) {
     sendJson(response, 500, {
-      error:
-        "OPENAI_API_KEY is not configured on the server. Add it in Vercel."
+      error: "Kids AI chat is not connected yet. Please try again later."
     });
     return;
   }

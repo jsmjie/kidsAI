@@ -44,6 +44,10 @@ if (!html.includes('id="chat-form"') || !app.includes('fetch("/api/chat"')) {
   throw new Error("The browser chat UI must post to /api/chat.");
 }
 
+if (!html.includes("General Chat") || !html.includes("Type a message...")) {
+  throw new Error("The page must expose a general chat box.");
+}
+
 if (!chatApi.includes('const CHAT_MODEL = "gpt-5.4-mini";')) {
   throw new Error("api/chat.js must fix the chat model to gpt-5.4-mini.");
 }
@@ -166,6 +170,15 @@ try {
   assert.equal(blockedResponse.statusCode, 200);
   assert.match(JSON.parse(blockedResponse.body).reply, /adult-only/i);
   assert.equal(fetchCalls, 0);
+
+  delete process.env.OPENAI_API_KEY;
+
+  const missingKeyResponse = createResponse();
+  await chatHandler(createRequest({ ageId: "child_9_12", message: "Hello" }), missingKeyResponse);
+
+  assert.equal(missingKeyResponse.statusCode, 500);
+  assert.doesNotMatch(missingKeyResponse.body, /OPENAI_API_KEY/);
+  assert.match(JSON.parse(missingKeyResponse.body).error, /not connected yet/i);
 } finally {
   if (originalApiKey === undefined) {
     delete process.env.OPENAI_API_KEY;

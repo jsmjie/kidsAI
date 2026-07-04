@@ -20,6 +20,7 @@ The product has two core features:
 This repo now includes a small Vercel serverless chat endpoint backed by OpenAI.
 It uses `OPENAI_API_KEY` on the server and fixes the chat model to
 `gpt-5.4-mini`.
+The public page includes a general chat box for age-appropriate questions.
 
 ## Links
 
