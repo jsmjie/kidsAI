@@ -20,8 +20,10 @@ The product has two core features:
 This repo uses Next.js with the Vercel AI SDK for a simple ChatGPT-like
 streaming chat experience at `/chat`. It uses `OPENAI_API_KEY` on the server,
 fixes the chat model to `gpt-5.4-mini`, and uses `gpt-4o-mini-transcribe` for
-voice input by default. The chat renders assistant answers as Markdown and keeps
-a small, safe learning memory in the browser.
+voice transcription by default. Voice input is then post-processed with the fixed
+`gpt-5.4-mini` model before the cleaned text is pasted into the chat box. The
+chat renders assistant answers as Markdown and keeps a small, safe learning
+memory in the browser.
 
 ## Links
 
@@ -54,20 +56,21 @@ OPENAI_API_KEY=
 OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
 ```
 
-The model is intentionally not configurable through environment variables. Kids
-AI chat uses `gpt-5.4-mini` only. Voice input defaults to the same transcription
-model used by AI Speaking Coach.
+The chat and voice post-processing model is intentionally not configurable
+through environment variables. Kids AI uses `gpt-5.4-mini` only for LLM text
+generation and voice transcript cleanup. Voice transcription defaults to the
+same transcription model used by AI Speaking Coach.
 
 ## Current Architecture
 
 - `app/page.tsx`: Minimal entry page that links to `/chat`.
 - `app/chat/page.tsx`: ChatGPT-like chat UI using `useChat`, AI SDK transport, and
   Streamdown Markdown rendering. It also records browser audio and places the
-  transcript into the composer for review before sending.
+  post-processed transcript into the composer for review before sending.
 - `app/api/chat/route.ts`: Streaming chat endpoint using `streamText` and the
   fixed OpenAI model.
 - `app/api/transcribe/route.ts`: Server-side voice transcription endpoint using
-  OpenAI audio transcriptions.
+  OpenAI audio transcriptions, followed by `gpt-5.4-mini` transcript cleanup.
 - `lib/kids-ai-policy.mjs`: Shared guardrail policy, age-band prompt, model
   constant, refusal text, and memory sanitization.
 - Browser memory is intentionally narrow: recent safe learning concepts and

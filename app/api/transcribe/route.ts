@@ -1,12 +1,56 @@
 export const runtime = "nodejs";
 
+import { openai } from "@ai-sdk/openai";
+import { generateText } from "ai";
+import { CHAT_MODEL, MAX_MESSAGE_CHARS } from "../../../lib/kids-ai-policy.mjs";
+
 const OPENAI_TRANSCRIPTIONS_URL = "https://api.openai.com/v1/audio/transcriptions";
 const DEFAULT_TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe";
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
+const VOICE_POSTPROCESS_SYSTEM_PROMPT = [
+  "You clean speech-to-text transcripts before they are pasted into the Kids AI chat box.",
+  "Fix likely transcription mistakes, punctuation, capitalization, spacing, and filler words.",
+  "Preserve the child's meaning, language, tone, and first-person wording.",
+  "If the child is asking for translation, keep it as a question or request for the chatbot to answer.",
+  "Do not answer the question, add new facts, or explain your edits.",
+  "Return only the cleaned chat-box text."
+].join(" ");
 
 type TranscriptionResponse = {
   text?: string;
 };
+
+function cleanTranscriptText(text: string) {
+  return text
+    .replace(/^```(?:text)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .replace(/^["']|["']$/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_MESSAGE_CHARS);
+}
+
+async function postProcessTranscript(transcript: string) {
+  const rawTranscript = cleanTranscriptText(transcript);
+
+  if (!rawTranscript) {
+    return "";
+  }
+
+  try {
+    const result = await generateText({
+      model: openai(CHAT_MODEL),
+      system: VOICE_POSTPROCESS_SYSTEM_PROMPT,
+      prompt: `Raw transcript:\n${rawTranscript}`,
+      maxOutputTokens: 260
+    });
+    const cleanedTranscript = cleanTranscriptText(result.text);
+
+    return cleanedTranscript || rawTranscript;
+  } catch {
+    return rawTranscript;
+  }
+}
 
 export async function POST(request: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -67,7 +111,7 @@ export async function POST(request: Request) {
   }
 
   const transcription = (await upstreamResponse.json()) as TranscriptionResponse;
-  const transcript = transcription.text?.trim() ?? "";
+  const transcript = await postProcessTranscript(transcription.text ?? "");
 
   if (!transcript) {
     return Response.json(
