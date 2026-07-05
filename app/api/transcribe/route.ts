@@ -18,7 +18,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const formData = await request.formData();
+  let formData: FormData;
+
+  try {
+    formData = await request.formData();
+  } catch {
+    return Response.json({ error: "Upload an audio file in the audio field." }, { status: 400 });
+  }
+
   const audio = formData.get("audio");
 
   if (!(audio instanceof File)) {
