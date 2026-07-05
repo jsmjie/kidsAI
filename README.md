@@ -17,10 +17,10 @@ The product has two core features:
    into smaller steps, invite the child to make a guess, and only reveal answers
    when that supports learning.
 
-This repo now includes a small Vercel serverless chat endpoint backed by OpenAI.
-It uses `OPENAI_API_KEY` on the server and fixes the chat model to
-`gpt-5.4-mini`.
-The public page includes a general chat box for age-appropriate questions.
+This repo now uses Next.js with the Vercel AI SDK for a ChatGPT-like streaming
+chat experience. It uses `OPENAI_API_KEY` on the server and fixes the chat model
+to `gpt-5.4-mini`. The chat renders assistant answers as Markdown and keeps a
+small, safe learning memory in the browser.
 
 ## Links
 
@@ -31,15 +31,17 @@ The public page includes a general chat box for age-appropriate questions.
 ## Local Preview
 
 ```bash
-python3 -m http.server 4173
+npm install
+npm run dev
 ```
 
-Then open `http://127.0.0.1:4173`.
+Then open `http://127.0.0.1:3000`.
 
 ## Verification
 
 ```bash
 npm test
+npm run build
 ```
 
 ## Environment
@@ -52,6 +54,17 @@ OPENAI_API_KEY=
 
 The model is intentionally not configurable through environment variables. Kids
 AI uses `gpt-5.4-mini` only.
+
+## Current Architecture
+
+- `app/page.tsx`: ChatGPT-like chat UI using `useChat`, AI SDK transport, and
+  Streamdown Markdown rendering.
+- `app/api/chat/route.ts`: Streaming chat endpoint using `streamText` and the
+  fixed OpenAI model.
+- `lib/kids-ai-policy.mjs`: Shared guardrail policy, age-band prompt, model
+  constant, refusal text, and memory sanitization.
+- Browser memory is intentionally narrow: recent safe learning concepts and
+  hint style only. It should not store private personal details.
 
 ## Product Direction
 
@@ -68,10 +81,6 @@ Kids AI should be designed as a coach:
 
 ## Deployment
 
-The app is designed for Vercel static hosting from the repository root.
-`vercel.json` sets `outputDirectory` to `.` so Vercel does not look for a
-separate `public/` folder.
-
-The current production deployment was created with Vercel CLI. GitHub
-auto-deploy can be connected after the Vercel GitHub App has access to this
-repository.
+The app is designed for Vercel as a Next.js project. The current production
+deployment was created with Vercel CLI. GitHub auto-deploy can be connected
+after the Vercel GitHub App has access to this repository.
