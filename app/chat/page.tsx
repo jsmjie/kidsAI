@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { ArrowUp, Eraser, Mic, Plus, Square } from "lucide-react";
+import { ArrowUp, Eraser, Globe, Mic, Plus, Square } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Streamdown } from "streamdown";
 import {
@@ -61,6 +61,7 @@ function conceptsFrom(text: string) {
 
 export default function Page() {
   const [input, setInput] = useState("");
+  const [forceWebSearch, setForceWebSearch] = useState(false);
   const [ageId, setAgeId] = useState(DEFAULT_AGE_ID);
   const [learnerMemory, setLearnerMemory] = useState<LearnerMemory>(DEFAULT_MEMORY);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -81,12 +82,13 @@ export default function Page() {
               id,
               messages: messages.slice(-16),
               ageId,
-              learnerMemory
+              learnerMemory,
+              forceWebSearch
             }
           };
         }
       }),
-    [ageId, learnerMemory]
+    [ageId, forceWebSearch, learnerMemory]
   );
 
   const { messages, sendMessage, setMessages, status, stop, error } = useChat({
@@ -144,6 +146,7 @@ export default function Page() {
       rememberFromUserMessage(trimmed);
       sendMessage({ text: trimmed });
       setInput("");
+      setForceWebSearch(false);
     },
     [rememberFromUserMessage, sendMessage, status]
   );
@@ -381,6 +384,17 @@ export default function Page() {
             rows={1}
             disabled={isBusy}
           />
+          <button
+            className="search-button"
+            type="button"
+            aria-label="Search online"
+            aria-pressed={forceWebSearch}
+            title="Search online"
+            onClick={() => setForceWebSearch((current) => !current)}
+            disabled={isBusy}
+          >
+            <Globe size={18} aria-hidden="true" />
+          </button>
           <button
             className="voice-button"
             type="button"

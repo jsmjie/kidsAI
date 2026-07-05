@@ -309,7 +309,7 @@ button {
 
 .composer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   gap: 8px;
   width: min(100% - 40px, 780px);
   margin: 0 auto 20px;
@@ -334,7 +334,7 @@ button {
   align-self: end;
 }
 
-.composer button:not(.send-button):not(.voice-button) {
+.composer button:not(.send-button):not(.voice-button):not(.search-button) {
   min-height: 40px;
   border: 0;
   border-radius: 999px;
@@ -355,6 +355,18 @@ button {
   height: 40px;
   background: #f4f4f4;
   color: var(--foreground);
+}
+
+.search-button {
+  width: 40px;
+  height: 40px;
+  background: #f4f4f4;
+  color: var(--foreground);
+}
+
+.search-button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .voice-button[aria-label="Stop voice input"] {

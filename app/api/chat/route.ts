@@ -91,6 +91,7 @@ export async function POST(request: Request) {
   const payload = body && typeof body === "object" ? (body as Record<string, unknown>) : {};
   const ageId = normalizeAgeId(payload.ageId);
   const learnerMemory = sanitizeLearnerMemory(payload.learnerMemory);
+  const forceWebSearch = payload.forceWebSearch === true;
 
   let messages: UIMessage[];
 
@@ -118,9 +119,11 @@ export async function POST(request: Request) {
   }
 
   const webSearchEnabled = isWebSearchEnabled();
+  const shouldUseWebSearch =
+    webSearchEnabled && (forceWebSearch || WEB_SEARCH_TRIGGER_PATTERN.test(userText));
   const systemPrompt = [
     buildSystemPrompt(ageId, learnerMemory),
-    webSearchEnabled
+    shouldUseWebSearch
       ? [
           "For school-safe questions that need current or live information, use the web_search tool instead of guessing.",
           "Only use web search for age-appropriate topics.",
@@ -136,7 +139,7 @@ export async function POST(request: Request) {
     system: systemPrompt,
     messages: await convertToModelMessages(messages),
     maxOutputTokens: 520,
-    tools: webSearchEnabled
+    tools: shouldUseWebSearch
       ? {
           web_search: openai.tools.webSearch({
             externalWebAccess: true,
@@ -147,10 +150,7 @@ export async function POST(request: Request) {
           })
         }
       : undefined,
-    toolChoice:
-      webSearchEnabled && WEB_SEARCH_TRIGGER_PATTERN.test(userText)
-        ? { type: "tool", toolName: "web_search" }
-        : undefined,
+    toolChoice: shouldUseWebSearch ? { type: "tool", toolName: "web_search" } : undefined,
     stopWhen: stepCountIs(5)
   });
 
