@@ -87,6 +87,7 @@ assert.match(chatPage, /forceWebSearch/);
 assert.match(chatPage, /aria-pressed/);
 assert.match(chatPage, /Search online/);
 assert.match(chatPage, /Globe/);
+assert.match(chatPage, /className="search-button"[\s\S]*<textarea/);
 assert.match(chatPage, /onKeyDown/);
 assert.match(chatPage, /event\.key === "Enter"/);
 assert.match(chatPage, /!event\.shiftKey/);
@@ -114,6 +115,9 @@ assert.match(css, /\.chat-sidebar/);
 assert.match(css, /grid-template-columns: 260px minmax\(0, 1fr\)/);
 assert.match(css, /\.voice-button/);
 assert.match(css, /\.search-button/);
+assert.match(css, /grid-template-columns: auto minmax\(0, 1fr\) auto auto/);
+assert.match(css, /\.search-button:focus-visible/);
+assert.match(css, /outline: none/);
 assert.match(css, /@media \(max-width: 780px\)/);
 
 assert.equal(normalizeAgeId("teen_13_17"), "teen_13_17");

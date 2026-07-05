@@ -376,14 +376,6 @@ export default function Page() {
             submitMessage(input);
           }}
         >
-          <textarea
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            onKeyDown={handleComposerKeyDown}
-            placeholder="Message Kids AI..."
-            rows={1}
-            disabled={isBusy}
-          />
           <button
             className="search-button"
             type="button"
@@ -395,6 +387,14 @@ export default function Page() {
           >
             <Globe size={18} aria-hidden="true" />
           </button>
+          <textarea
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={handleComposerKeyDown}
+            placeholder="Message Kids AI..."
+            rows={1}
+            disabled={isBusy}
+          />
           <button
             className="voice-button"
             type="button"

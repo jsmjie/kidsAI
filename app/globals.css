@@ -309,7 +309,7 @@ button {
 
 .composer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   gap: 8px;
   width: min(100% - 40px, 780px);
   margin: 0 auto 20px;
@@ -360,6 +360,7 @@ button {
 .search-button {
   width: 40px;
   height: 40px;
+  border: 0;
   background: #f4f4f4;
   color: var(--foreground);
 }
@@ -367,6 +368,11 @@ button {
 .search-button[aria-pressed="true"] {
   background: var(--accent);
   color: #ffffff;
+}
+
+.search-button:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .voice-button[aria-label="Stop voice input"] {
