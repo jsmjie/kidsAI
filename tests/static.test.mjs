@@ -15,6 +15,7 @@ const requiredFiles = [
   "app/page.tsx",
   "app/chat/page.tsx",
   "app/api/chat/route.ts",
+  "app/api/transcribe/route.ts",
   "app/globals.css",
   "lib/client-policy.ts",
   "lib/kids-ai-policy.mjs",
@@ -29,13 +30,16 @@ for (const file of requiredFiles) {
   assert.equal(existsSync(new URL(`../${file}`, import.meta.url)), true, `Missing required file: ${file}`);
 }
 
-const [packageText, homePage, chatPage, route, policy, css, vercelText] = await Promise.all([
+const [packageText, homePage, chatPage, route, transcribeRoute, policy, css, envExample, readme, vercelText] = await Promise.all([
   readFile(new URL("../package.json", import.meta.url), "utf8"),
   readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
   readFile(new URL("../app/chat/page.tsx", import.meta.url), "utf8"),
   readFile(new URL("../app/api/chat/route.ts", import.meta.url), "utf8"),
+  readFile(new URL("../app/api/transcribe/route.ts", import.meta.url), "utf8"),
   readFile(new URL("../lib/kids-ai-policy.mjs", import.meta.url), "utf8"),
   readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  readFile(new URL("../.env.example", import.meta.url), "utf8"),
+  readFile(new URL("../README.md", import.meta.url), "utf8"),
   readFile(new URL("../vercel.json", import.meta.url), "utf8")
 ]);
 
@@ -66,13 +70,27 @@ assert.doesNotMatch(homePage, /useChat|DefaultChatTransport|Streamdown/);
 assert.match(chatPage, /useChat/);
 assert.match(chatPage, /DefaultChatTransport/);
 assert.match(chatPage, /Streamdown/);
+assert.match(chatPage, /MediaRecorder/);
+assert.match(chatPage, /getUserMedia/);
+assert.match(chatPage, /fetch\("\/api\/transcribe"/);
 assert.match(chatPage, /localStorage/);
 assert.match(chatPage, /prepareSendMessagesRequest/);
 assert.match(chatPage, /Message Kids AI\.\.\./);
 assert.match(chatPage, /General Chat/);
 
+assert.match(transcribeRoute, /DEFAULT_TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe"/);
+assert.match(transcribeRoute, /OPENAI_TRANSCRIPTIONS_URL/);
+assert.match(transcribeRoute, /\/v1\/audio\/transcriptions/);
+assert.match(transcribeRoute, /process\.env\.OPENAI_API_KEY/);
+assert.match(transcribeRoute, /process\.env\.OPENAI_TRANSCRIBE_MODEL/);
+assert.match(transcribeRoute, /MAX_AUDIO_BYTES = 25 \* 1024 \* 1024/);
+assert.match(envExample, /OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe/);
+assert.match(readme, /Neon Postgres/);
+assert.match(readme, /chat_sessions/);
+
 assert.match(css, /\.chat-sidebar/);
 assert.match(css, /grid-template-columns: 260px minmax\(0, 1fr\)/);
+assert.match(css, /\.voice-button/);
 assert.match(css, /@media \(max-width: 780px\)/);
 
 assert.equal(normalizeAgeId("teen_13_17"), "teen_13_17");

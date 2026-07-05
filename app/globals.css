@@ -203,7 +203,8 @@ button {
 }
 
 .icon-button,
-.send-button {
+.send-button,
+.voice-button {
   display: inline-grid;
   place-items: center;
   border: 0;
@@ -308,7 +309,7 @@ button {
 
 .composer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 8px;
   width: min(100% - 40px, 780px);
   margin: 0 auto 20px;
@@ -333,7 +334,7 @@ button {
   align-self: end;
 }
 
-.composer button:not(.send-button) {
+.composer button:not(.send-button):not(.voice-button) {
   min-height: 40px;
   border: 0;
   border-radius: 999px;
@@ -349,9 +350,28 @@ button {
   color: #ffffff;
 }
 
+.voice-button {
+  width: 40px;
+  height: 40px;
+  background: #f4f4f4;
+  color: var(--foreground);
+}
+
+.voice-button[aria-label="Stop voice input"] {
+  background: #fee4e2;
+  color: #b42318;
+}
+
 .composer button:disabled {
   cursor: not-allowed;
   opacity: 0.35;
+}
+
+.voice-status {
+  width: min(100% - 40px, 780px);
+  margin: -12px auto 12px;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 :focus-visible {

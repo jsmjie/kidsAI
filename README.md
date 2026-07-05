@@ -18,9 +18,10 @@ The product has two core features:
    when that supports learning.
 
 This repo uses Next.js with the Vercel AI SDK for a simple ChatGPT-like
-streaming chat experience at `/chat`. It uses `OPENAI_API_KEY` on the server and
-fixes the chat model to `gpt-5.4-mini`. The chat renders assistant answers as
-Markdown and keeps a small, safe learning memory in the browser.
+streaming chat experience at `/chat`. It uses `OPENAI_API_KEY` on the server,
+fixes the chat model to `gpt-5.4-mini`, and uses `gpt-4o-mini-transcribe` for
+voice input by default. The chat renders assistant answers as Markdown and keeps
+a small, safe learning memory in the browser.
 
 ## Links
 
@@ -50,22 +51,47 @@ Server-side chat requires:
 
 ```bash
 OPENAI_API_KEY=
+OPENAI_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
 ```
 
 The model is intentionally not configurable through environment variables. Kids
-AI uses `gpt-5.4-mini` only.
+AI chat uses `gpt-5.4-mini` only. Voice input defaults to the same transcription
+model used by AI Speaking Coach.
 
 ## Current Architecture
 
 - `app/page.tsx`: Minimal entry page that links to `/chat`.
 - `app/chat/page.tsx`: ChatGPT-like chat UI using `useChat`, AI SDK transport, and
-  Streamdown Markdown rendering.
+  Streamdown Markdown rendering. It also records browser audio and places the
+  transcript into the composer for review before sending.
 - `app/api/chat/route.ts`: Streaming chat endpoint using `streamText` and the
   fixed OpenAI model.
+- `app/api/transcribe/route.ts`: Server-side voice transcription endpoint using
+  OpenAI audio transcriptions.
 - `lib/kids-ai-policy.mjs`: Shared guardrail policy, age-band prompt, model
   constant, refusal text, and memory sanitization.
 - Browser memory is intentionally narrow: recent safe learning concepts and
   hint style only. It should not store private personal details.
+
+## Database Recommendation
+
+If Kids AI needs to memorize every chat, use Neon Postgres through the Vercel
+Marketplace. Postgres is the right default because full chat history is
+structured, relational data: sessions, messages, safe memory summaries, consent
+state, age band, and audit metadata. Use Vercel Blob only if storing raw audio
+files becomes necessary; do not put full chats in Edge Config.
+
+Recommended first schema:
+
+- `chat_sessions`: anonymous session id, age band, created/updated timestamps.
+- `chat_messages`: session id, role, Markdown/text content, safety outcome,
+  created timestamp.
+- `learner_memory`: session id, safe concept summary, hint style, updated
+  timestamp.
+
+For kids, storing every chat should be opt-in and have a retention policy. Avoid
+storing full names, school names, addresses, phone numbers, emails, or raw audio
+unless a parent/teacher workflow explicitly requires it.
 
 ## Product Direction
 

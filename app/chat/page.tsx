@@ -2,8 +2,8 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { ArrowUp, Eraser, Plus } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ArrowUp, Eraser, Mic, Plus, Square } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Streamdown } from "streamdown";
 import {
   AGE_BANDS,
@@ -25,6 +25,8 @@ const DEFAULT_MEMORY: LearnerMemory = {
   recentConcepts: [],
   preferredHintStyle: "socratic"
 };
+
+type VoiceStatus = "idle" | "recording" | "transcribing";
 
 function loadJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") {
@@ -62,6 +64,12 @@ export default function Page() {
   const [ageId, setAgeId] = useState(DEFAULT_AGE_ID);
   const [learnerMemory, setLearnerMemory] = useState<LearnerMemory>(DEFAULT_MEMORY);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>("idle");
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const shouldTranscribeRef = useRef(false);
 
   const transport = useMemo(
     () =>
@@ -145,7 +153,111 @@ export default function Page() {
     window.localStorage.removeItem(STORAGE_MESSAGES_KEY);
   }
 
+  function stopStream() {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+  }
+
+  async function transcribeAudio(audioBlob: Blob) {
+    setVoiceStatus("transcribing");
+    setVoiceError(null);
+
+    const formData = new FormData();
+    const extension = audioBlob.type.includes("mp4") ? "mp4" : "webm";
+    formData.append("audio", audioBlob, `kids-ai.${extension}`);
+
+    try {
+      const response = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        transcript?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.transcript) {
+        throw new Error(payload.error || "Voice input could not be transcribed.");
+      }
+
+      const transcript = payload.transcript;
+      setInput((current) => (current.trim() ? `${current.trim()} ${transcript}` : transcript));
+    } catch (caughtError) {
+      setVoiceError(
+        caughtError instanceof Error ? caughtError.message : "Voice input could not be transcribed."
+      );
+    } finally {
+      setVoiceStatus("idle");
+    }
+  }
+
+  async function startVoiceInput() {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setVoiceError("Voice input is not supported in this browser.");
+      return;
+    }
+
+    setVoiceError(null);
+    audioChunksRef.current = [];
+    shouldTranscribeRef.current = true;
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const recorder = new MediaRecorder(stream);
+      recorderRef.current = recorder;
+
+      recorder.addEventListener("dataavailable", (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      });
+
+      recorder.addEventListener("stop", () => {
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: recorder.mimeType || "audio/webm"
+        });
+        recorderRef.current = null;
+        stopStream();
+
+        if (!shouldTranscribeRef.current) {
+          setVoiceStatus("idle");
+          return;
+        }
+
+        if (audioBlob.size === 0) {
+          setVoiceStatus("idle");
+          setVoiceError("No speech was recorded.");
+          return;
+        }
+
+        void transcribeAudio(audioBlob);
+      });
+
+      recorder.start();
+      setVoiceStatus("recording");
+    } catch {
+      stopStream();
+      setVoiceStatus("idle");
+      setVoiceError("Microphone permission was not granted.");
+    }
+  }
+
+  function stopVoiceInput() {
+    shouldTranscribeRef.current = true;
+    recorderRef.current?.stop();
+  }
+
+  useEffect(() => {
+    return () => {
+      shouldTranscribeRef.current = false;
+      recorderRef.current?.stop();
+      stopStream();
+    };
+  }, []);
+
   const isBusy = status === "submitted" || status === "streaming";
+  const isVoiceBusy = voiceStatus === "recording" || voiceStatus === "transcribing";
 
   return (
     <main className="chat-app">
@@ -243,6 +355,7 @@ export default function Page() {
         </div>
 
         {error ? <p className="chat-error">{error.message}</p> : null}
+        {voiceError ? <p className="chat-error">{voiceError}</p> : null}
 
         <form
           className="composer"
@@ -258,6 +371,19 @@ export default function Page() {
             rows={1}
             disabled={isBusy}
           />
+          <button
+            className="voice-button"
+            type="button"
+            aria-label={voiceStatus === "recording" ? "Stop voice input" : "Start voice input"}
+            onClick={voiceStatus === "recording" ? stopVoiceInput : startVoiceInput}
+            disabled={isBusy || voiceStatus === "transcribing"}
+          >
+            {voiceStatus === "recording" ? (
+              <Square size={16} aria-hidden="true" />
+            ) : (
+              <Mic size={18} aria-hidden="true" />
+            )}
+          </button>
           {isBusy ? (
             <button type="button" onClick={stop}>
               Stop
@@ -268,6 +394,11 @@ export default function Page() {
             </button>
           )}
         </form>
+        {isVoiceBusy ? (
+          <p className="voice-status">
+            {voiceStatus === "recording" ? "Listening..." : "Transcribing..."}
+          </p>
+        ) : null}
       </section>
     </main>
   );
