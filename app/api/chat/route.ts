@@ -3,6 +3,7 @@ import {
   convertToModelMessages,
   createUIMessageStream,
   createUIMessageStreamResponse,
+  stepCountIs,
   streamText,
   type UIMessage,
   validateUIMessages
@@ -18,6 +19,20 @@ import {
 } from "../../../lib/kids-ai-policy.mjs";
 
 export const maxDuration = 30;
+const WEB_SEARCH_TRIGGER_PATTERN =
+  /\b(latest|today|current|recent|news|right now|search online|look it up|look up|web search|online)\b/i;
+const DEFAULT_WEB_SEARCH_ALLOWED_DOMAINS = [
+  "britannica.com",
+  "khanacademy.org",
+  "nasa.gov",
+  "nationalgeographic.com",
+  "noaa.gov",
+  "pbskids.org",
+  "si.edu",
+  "spaceplace.nasa.gov",
+  "timeforkids.com",
+  "weather.gov"
+];
 
 function latestUserText(messages: UIMessage[]) {
   const latest = [...messages].reverse().find((message) => message.role === "user");
@@ -29,6 +44,18 @@ function latestUserText(messages: UIMessage[]) {
       .join(" ")
       .trim() ?? ""
   );
+}
+
+function isWebSearchEnabled() {
+  return process.env.OPENAI_ENABLE_WEB_SEARCH?.trim().toLowerCase() === "true";
+}
+
+function webSearchAllowedDomains() {
+  const customDomains = process.env.OPENAI_WEB_SEARCH_ALLOWED_DOMAINS?.split(",")
+    .map((domain) => domain.trim().toLowerCase())
+    .filter(Boolean);
+
+  return customDomains?.length ? customDomains : DEFAULT_WEB_SEARCH_ALLOWED_DOMAINS;
 }
 
 function textStreamResponse(text: string, messages: UIMessage[]) {
@@ -90,11 +117,41 @@ export async function POST(request: Request) {
     return textStreamResponse(safeRefusalMarkdown(), messages);
   }
 
+  const webSearchEnabled = isWebSearchEnabled();
+  const systemPrompt = [
+    buildSystemPrompt(ageId, learnerMemory),
+    webSearchEnabled
+      ? [
+          "For school-safe questions that need current or live information, use the web_search tool instead of guessing.",
+          "Only use web search for age-appropriate topics.",
+          "Prefer the allowlisted educational sources made available through the tool."
+        ].join(" ")
+      : null
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
   const result = streamText({
     model: openai(CHAT_MODEL),
-    system: buildSystemPrompt(ageId, learnerMemory),
+    system: systemPrompt,
     messages: await convertToModelMessages(messages),
-    maxOutputTokens: 520
+    maxOutputTokens: 520,
+    tools: webSearchEnabled
+      ? {
+          web_search: openai.tools.webSearch({
+            externalWebAccess: true,
+            searchContextSize: "medium",
+            filters: {
+              allowedDomains: webSearchAllowedDomains()
+            }
+          })
+        }
+      : undefined,
+    toolChoice:
+      webSearchEnabled && WEB_SEARCH_TRIGGER_PATTERN.test(userText)
+        ? { type: "tool", toolName: "web_search" }
+        : undefined,
+    stopWhen: stepCountIs(5)
   });
 
   return result.toUIMessageStreamResponse({

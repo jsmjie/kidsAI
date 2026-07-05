@@ -61,6 +61,17 @@ through environment variables. Kids AI uses `gpt-5.4-mini` only for LLM text
 generation and voice transcript cleanup. Voice transcription defaults to the
 same transcription model used by AI Speaking Coach.
 
+Optional online search:
+
+```bash
+OPENAI_ENABLE_WEB_SEARCH=false
+OPENAI_WEB_SEARCH_ALLOWED_DOMAINS=britannica.com,khanacademy.org,nasa.gov,nationalgeographic.com,noaa.gov,pbskids.org,si.edu,spaceplace.nasa.gov,timeforkids.com,weather.gov
+```
+
+Set `OPENAI_ENABLE_WEB_SEARCH=true` to let the chat route use OpenAI hosted web
+search for current questions. Keep the domain allowlist narrow for a kid-facing
+product.
+
 ## Current Architecture
 
 - `app/page.tsx`: Minimal entry page that links to `/chat`.
@@ -68,7 +79,8 @@ same transcription model used by AI Speaking Coach.
   Streamdown Markdown rendering. It also records browser audio and places the
   post-processed transcript into the composer for review before sending.
 - `app/api/chat/route.ts`: Streaming chat endpoint using `streamText` and the
-  fixed OpenAI model.
+  fixed OpenAI model. When enabled by env, it can also call OpenAI hosted
+  `web_search` with an allowlisted domain filter for current information.
 - `app/api/transcribe/route.ts`: Server-side voice transcription endpoint using
   OpenAI audio transcriptions, followed by `gpt-5.4-mini` transcript cleanup.
 - `lib/kids-ai-policy.mjs`: Shared guardrail policy, age-band prompt, model
@@ -108,6 +120,8 @@ Kids AI should be designed as a coach:
   material for children.
 - It keeps personal data, unrestricted web access, and external tools out of the
   child-facing path unless they are explicitly gated server-side.
+- If online search is enabled, it should stay behind server-side allowlists and
+  freshness triggers instead of being exposed as unrestricted browsing.
 
 ## Deployment
 
