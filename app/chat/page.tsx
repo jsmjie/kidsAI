@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { ArrowUp, Eraser, Mic, Plus, Square } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Streamdown } from "streamdown";
 import {
   AGE_BANDS,
@@ -258,6 +258,15 @@ export default function Page() {
 
   const isBusy = status === "submitted" || status === "streaming";
   const isVoiceBusy = voiceStatus === "recording" || voiceStatus === "transcribing";
+  const handleComposerKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+        event.preventDefault();
+        submitMessage(input);
+      }
+    },
+    [input, submitMessage]
+  );
 
   return (
     <main className="chat-app">
@@ -367,6 +376,7 @@ export default function Page() {
           <textarea
             value={input}
             onChange={(event) => setInput(event.target.value)}
+            onKeyDown={handleComposerKeyDown}
             placeholder="Message Kids AI..."
             rows={1}
             disabled={isBusy}

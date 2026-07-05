@@ -81,6 +81,10 @@ assert.match(chatPage, /localStorage/);
 assert.match(chatPage, /prepareSendMessagesRequest/);
 assert.match(chatPage, /Message Kids AI\.\.\./);
 assert.match(chatPage, /General Chat/);
+assert.match(chatPage, /onKeyDown/);
+assert.match(chatPage, /event\.key === "Enter"/);
+assert.match(chatPage, /!event\.shiftKey/);
+assert.match(chatPage, /event\.preventDefault\(\)/);
 
 assert.match(transcribeRoute, /DEFAULT_TRANSCRIBE_MODEL = "gpt-4o-mini-transcribe"/);
 assert.match(transcribeRoute, /OPENAI_TRANSCRIPTIONS_URL/);
