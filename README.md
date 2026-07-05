@@ -17,10 +17,10 @@ The product has two core features:
    into smaller steps, invite the child to make a guess, and only reveal answers
    when that supports learning.
 
-This repo now uses Next.js with the Vercel AI SDK for a ChatGPT-like streaming
-chat experience. It uses `OPENAI_API_KEY` on the server and fixes the chat model
-to `gpt-5.4-mini`. The chat renders assistant answers as Markdown and keeps a
-small, safe learning memory in the browser.
+This repo uses Next.js with the Vercel AI SDK for a simple ChatGPT-like
+streaming chat experience at `/chat`. It uses `OPENAI_API_KEY` on the server and
+fixes the chat model to `gpt-5.4-mini`. The chat renders assistant answers as
+Markdown and keeps a small, safe learning memory in the browser.
 
 ## Links
 
@@ -57,7 +57,8 @@ AI uses `gpt-5.4-mini` only.
 
 ## Current Architecture
 
-- `app/page.tsx`: ChatGPT-like chat UI using `useChat`, AI SDK transport, and
+- `app/page.tsx`: Minimal entry page that links to `/chat`.
+- `app/chat/page.tsx`: ChatGPT-like chat UI using `useChat`, AI SDK transport, and
   Streamdown Markdown rendering.
 - `app/api/chat/route.ts`: Streaming chat endpoint using `streamText` and the
   fixed OpenAI model.
